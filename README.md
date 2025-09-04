@@ -70,3 +70,18 @@ VITE_API_URL=http://localhost:5000
 ## Notes
 - QR codes are generated server-side and stored on tickets as Data URLs.
 - Payment is simulated; all bookings are marked as paid in demo mode.
+
+## Configuration
+
+Frontend:
+```
+cd frontend
+cp .env.example .env
+# set VITE_API_URL to your backend URL
+VITE_API_URL=https://eventx-studio-production-b18c.up.railway.app
+npm run dev
+```
+
+Backend (Railway):
+- Ensure envs: `MONGO_URI`, `JWT_SECRET`, optionally `ALLOWED_ORIGINS`.
+- Health: `GET /api/health` should return `{ status: "ok" }`.

@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
+import { api, API_BASE } from '../lib/apiClient'
 import { useAuth } from './AuthContext.jsx'
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API = API_BASE
 
 const DataContext = createContext(null)
 
@@ -13,13 +14,13 @@ export const DataProvider = ({ children }) => {
   const [analytics, setAnalytics] = useState({ summary: null, demographics: null })
 
   const client = useMemo(() => {
-    const c = axios.create({ baseURL: API })
+    const c = api
     if (token) c.defaults.headers.common['Authorization'] = `Bearer ${token}`
     return c
   }, [token])
 
   const loadPublicEvents = async () => {
-    const res = await axios.get(`${API}/api/user/events`)
+    const res = await api.get(`/api/user/events`)
     setEvents(res.data)
   }
 

@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { api, API_BASE } from '../lib/apiClient'
 import axios from 'axios'
-
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 const AuthContext = createContext(null)
 
@@ -11,7 +10,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      axios.defaults.baseURL = API
+      axios.defaults.baseURL = API_BASE
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
       const storedUser = localStorage.getItem('user')
       if (storedUser) setUser(JSON.parse(storedUser))
@@ -19,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   }, [token])
 
   const login = async (email, password) => {
-    const res = await axios.post(`${API}/api/auth/login`, { email, password })
+    const res = await api.post(`/api/auth/login`, { email, password })
     setToken(res.data.token)
     setUser(res.data.user)
     localStorage.setItem('token', res.data.token)
@@ -27,7 +26,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   const register = async (payload) => {
-    const res = await axios.post(`${API}/api/auth/register`, payload)
+    const res = await api.post(`/api/auth/register`, payload)
     setToken(res.data.token)
     setUser(res.data.user)
     localStorage.setItem('token', res.data.token)

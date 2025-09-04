@@ -2,9 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { useData } from '../context/DataContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import axios from 'axios'
+import { api, API_BASE } from '../lib/apiClient'
 import ChartComponent from '../components/ChartComponent.jsx'
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API = API_BASE
 
 export default function AdminDashboard() {
   const { analytics, loadAdminAnalytics } = useData()
@@ -14,7 +15,7 @@ export default function AdminDashboard() {
   const [form, setForm] = useState({ title: '', description: '', date: '', location: '', price: 0, capacity: 10 })
 
   const client = useMemo(() => {
-    const c = axios.create({ baseURL: API })
+    const c = api
     if (token) c.defaults.headers.common['Authorization'] = `Bearer ${token}`
     return c
   }, [token])

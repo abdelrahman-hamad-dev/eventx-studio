@@ -1,10 +1,11 @@
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { api, API_BASE } from '../lib/apiClient'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useData } from '../context/DataContext.jsx'
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API = API_BASE
 
 export default function EventDetails() {
   const { id } = useParams()
@@ -13,7 +14,7 @@ export default function EventDetails() {
   const { bookTicket } = useData()
 
   useEffect(() => {
-    axios.get(`${API}/api/user/events/${id}`).then(r => setEvent(r.data))
+    api.get(`/api/user/events/${id}`).then(r => setEvent(r.data))
   }, [id])
 
   if (!event) return <div>Loading...</div>

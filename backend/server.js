@@ -10,7 +10,16 @@ import userRoutes from './routes/user.js';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+const allowed = (process.env.ALLOWED_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true);
+    if (allowed.length === 0 || allowed.includes(origin)) return cb(null, true);
+    return cb(new Error('Not allowed by CORS'));
+  },
+  credentials: false,
+};
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
@@ -18,12 +27,16 @@ app.get('/', (req, res) => {
   res.json({ message: 'EventX Studio API' });
 });
 
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', ts: Date.now() });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://hgg262157_db_user:1234reem.@cluster0.ycgkgol.mongodb.net/eventx?retryWrites=true&w=majority&appName=Cluster0";
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/eventx';
 
 mongoose
   .connect(MONGO_URI)
