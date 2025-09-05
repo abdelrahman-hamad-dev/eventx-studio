@@ -35,6 +35,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 
+const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/eventx';
 
 // Connect to MongoDB
@@ -42,10 +43,9 @@ mongoose
   .connect(MONGO_URI)
   .then(() => {
     console.log('MongoDB connected successfully');
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {
     console.error('MongoDB connection error:', err.message);
   });
 
-// Export the app for Vercel
-export default app;
